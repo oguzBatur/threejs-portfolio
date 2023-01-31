@@ -1,6 +1,4 @@
 import { Cloud, Float, MeshDistortMaterial } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import { Color } from "three";
 import { randInt } from "three/src/math/MathUtils"
 
 interface IBackground {
@@ -15,10 +13,10 @@ function Background({ props, ballCount }: IBackground) {
     ballArray.fill(1);
     return ballArray.map((b, i) => {
       console.log('Ball: ', i);
-      let randX = randInt(-10, 10);
-      let randY = randInt(-20, 20);
-      let randZ = randInt(-10, -5);
-      let randSize = randInt(1, 3)
+      let randX = randInt(-50, 50);
+      let randY = randInt(-30, 30);
+      let randZ = randInt(-15, -10);
+      let randSize = randInt(2, 3)
       return (
         <Ball key={`ball: ${i}`} scale={[randSize, randSize, randSize]} position={[randX, randY, randZ]} />
       )
@@ -35,20 +33,22 @@ function Background({ props, ballCount }: IBackground) {
 
 
 function Ball(props: JSX.IntrinsicElements['mesh']) {
-  const randDist = randInt(.5, 1);
+  const randDist = randInt(.4, .5);
   const randSpeed = randInt(1, 3)
-  const randEmis = randInt(50, 100);
+  const randRad = randInt(.5, 1);
+  const randEmis = randInt(10, 100);
 
 
   return (
     <Float>
-      <mesh {...props} >
+      <mesh castShadow receiveShadow {...props} >
         <MeshDistortMaterial
           color="#ffffff"
           emissive='#ffffff'
           emissiveIntensity={randEmis}
           distort= {randDist}
           speed={randSpeed}
+          radius={randRad}
         />
         <sphereGeometry />
       </mesh>

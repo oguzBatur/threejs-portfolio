@@ -1,26 +1,32 @@
 import { useRef, useState } from "react";
 import "./App.css";
-import { Canvas, useFrame, Vector3 } from "@react-three/fiber";
-import { Environment, Scroll, ScrollControls, useScroll, Text3D, ContactShadows, MeshReflectorMaterial, MeshTransmissionMaterial } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Scroll, ScrollControls, useScroll, ContactShadows, Text, Points, PointMaterial, Text3D, Float, Environment, BakeShadows } from "@react-three/drei";
 import Background from "./components/Background";
-import { Euler, Vector } from "three";
+import * as random from 'maath/random/dist/maath-random.cjs';
+import { PcSetup } from './assets/Room';
 
 function App() {
-  const [perfSucks, degrade] = useState(false);
+  const mouse = useRef<number[]>([0, 0]);
   return (
     <Canvas
       shadows
-      dpr={[1, perfSucks ? 1.5 : 2]}
+      dpr={[1, 2]}
       eventPrefix="client"
       camera={{ fov: 70, }}
       gl={{ logarithmicDepthBuffer: true, antialias: false }}
       style={{ height: '100vh' }}
     >
-      <fog attach={'fog'} args={['black', 10, 40]} />
-      <color attach="background" args={['black']} />
-      <Background ballCount={20} props={{ position: [-20, 10, -25], renderOrder: -1 }} />
-      <ScrollControls horizontal={false} pages={5} damping={.1}  >
+      <ContactShadows resolution={1024} frames={1} position={[0, -1.16, 0]} scale={10} blur={3} opacity={1} far={10} />
+      <Background />
+      <BakeShadows />
+      <color attach="background" args={['#202020']} />
+      <fog attach="fog" args={['#202020', 5, 50]} />
+      <ambientLight intensity={.015} castShadow position={[0, -2, 0]} />
+      <directionalLight />
+      <ScrollControls horizontal={false} pages={2} damping={6}  >
         <Scene position={[0, -2, 0]} />
+        <Background ballCount={100} props={{ position: [0, 40, -25] }} />
       </ScrollControls>
     </Canvas>
   );
@@ -28,66 +34,26 @@ function App() {
 
 
 function SceneProps() {
-
-  const [parentRot, setParentRot] = useState[-Math.PI / 4, 0, -Math.PI / 30]);
-  let exampleRot = [-Math.PI / 4, 0, -Math.PI / 30];
-
-  useFrame((state) => {
-    exampleRot[0] = state.clock.getElapsedTime();
-  })
+  const pcRef = useRef<any>();
 
   return (
     <Scroll>
-      <spotLight intensity={1} position={[0, 10, -15]} angle={10} penumbra={1} />
-      <group position={[10, 2, -10]} rotation={exampleRot}>
-        <group position={[-10, 0, 0]}>
-          <Text3D scale={[.4, .4, 1]}
-            castShadow
-            bevelEnabled
-            letterSpacing={-0.03}
-            height={0.25}
-            bevelSize={0.01}
-            bevelSegments={10}
-            curveSegments={128}
-            bevelThickness={0.01}
-            font={'/fonts/JetBrains Mono ExtraBold_Regular.json'}>
-            Merhaba, Benim Adım Batur.
-            <MeshReflectorMaterial
-              mirror={1}
-              blur={[300, 300]}
-              resolution={2048}
-              mixBlur={1}
-              mixStrength={80}
-              roughness={1}
-              depthScale={1.2}
-              minDepthThreshold={0.4}
-              maxDepthThreshold={1.4}
-              metalness={0.8}
-            />
-
-            <ContactShadows />
-          </Text3D>
-          <Text3D scale={[.2, .2, 1]} position={[0, -.5, 0]} font={'/fonts/JetBrains Mono NL Light_Regular.json'}>
-            Yazılım ile uğraşmak benim tutkum.
-          </Text3D>
-        </group>
-        <mesh receiveShadow castShadow position={[0, 0, 0]} >
-          <planeGeometry args={[30, 40]} />
-          <MeshReflectorMaterial
-            mirror={1}
-            blur={[300, 30]}
-            resolution={2048}
-            mixBlur={1}
-            mixStrength={80}
-            roughness={1}
-            depthScale={1.2}
-            minDepthThreshold={0.4}
-            maxDepthThreshold={1.4}
-            color="white"
-            metalness={.9}
-          />
+      <group ref={pcRef} castShadow scale={2} position={[0, -2, -20]}>
+        <Text scale={.4}
+          position={[0, 3.5, -2]}
+          castShadow
+          letterSpacing={-0.03}
+          font={'/fonts/JetBrains Mono ExtraBold_Regular.json'}>
+          Merhaba, Benim Adım Batur.
+        </Text>
+        <Text scale={.25} position={[0, 3, -2]} font={'/fonts/JetBrains Mono NL Light_Regular.json'}>
+          Yazılım ile uğraşmak benim tutkum.
+        </Text>
+        <PcSetup />
+        <mesh position={[0, -10, -8]}>
+          <boxGeometry args={[20, 20, 20]} />
+          <meshPhongMaterial />
         </mesh>
-
       </group>
     </Scroll>
   )
@@ -97,13 +63,12 @@ function SceneProps() {
 function Scene(props: JSX.IntrinsicElements['group']) {
 
   const scroll = useScroll();
-  useFrame((state, delta) => {
+  useFrame((state) => {
     const offset = 1 - scroll.offset;
-    const r2 = scroll.range(1 / 4, 1 / 4)
+    const r2 = scroll.range(1 / 8, 1 / 4)
     const r3 = scroll.visible(4 / 5, 1 / 5)
-    state.camera.position.set(0, 0, r2);
+    state.camera.position.set(0, r2, r2);
   })
-
 
   return (
     <group {...props}>
@@ -111,12 +76,23 @@ function Scene(props: JSX.IntrinsicElements['group']) {
     </group>
 
   )
-
-
-
-
 }
 
+function Stars(props) {
+  const ref = useRef<any>()
+  const [sphere] = useState(() => random.inSphere(new Float32Array(5000), { radius: 1.5 }))
+  useFrame((state, delta) => {
+    ref.current.rotation.x -= delta / 10
+    ref.current.rotation.y -= delta / 15
+  })
+  return (
+    <group rotation={[0, 0, Math.PI / 4]}>
+      <Points ref={ref} positions={sphere} stride={3} frustumCulled={false} {...props}>
+        <PointMaterial transparent color="#ffa0e0" size={0.005} sizeAttenuation={true} depthWrite={false} />
+      </Points>
+    </group>
+  )
+}
 
 
 export default App;
