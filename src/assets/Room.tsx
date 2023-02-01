@@ -4,8 +4,7 @@ Command: npx gltfjsx@6.1.4 .\room.glb --types
 */
 
 import * as THREE from 'three'
-import React, { useRef } from 'react'
-import { Float, Lightformer, OrbitControls, Stage, useGLTF, Text } from '@react-three/drei'
+import { Float, useGLTF, } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 type GLTFResult = GLTF & {
   nodes: {
@@ -43,20 +42,22 @@ export function PcSetup(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/room.glb') as GLTFResult
   return (
     <group  {...props} dispose={null}>
+      <Float floatingRange={[0.1, .5]}>
         <group castShadow position={[-0.48, 0.1, 1.26]} rotation={[0, 0.41, 0]} scale={[1.21, 0.07, 0.54]}>
           <mesh geometry={nodes.Cube001.geometry} material={materials.KeyBaseMat} />
           <mesh geometry={nodes.Cube001_1.geometry} material={materials.KeysMat} />
           <mesh geometry={nodes.Cube001_2.geometry} material={materials.KeysUnderMat} />
         </group>
-        <group castShadow position={[0, 2.55, -2.22]} rotation={[0, 0, 0]} scale={[2, 1, 1]}>
-          <mesh geometry={nodes.Cube003.geometry} material={materials.MonitorBase} />
-          <mesh geometry={nodes.Cube003_1.geometry} material={materials.MonitorScreen} />
-        </group>
-        <group castShadow position={[2.33, 0.13, 1.45]} rotation={[0, -0.2, 0]} scale={[0.2, 0.8, 0.38]}>
-          <mesh geometry={nodes.Cube004.geometry} material={materials.KeysUnderMat} />
-          <mesh geometry={nodes.Cube004_1.geometry} material={materials.MouseBaseMat} />
-        </group>
-        <mesh geometry={nodes.MousePad.geometry} material={materials.Cable} position={[2.34, 0.04, 1.29]} scale={[1, 0.66, 1]} />
+      </Float>
+      <group castShadow position={[0, 2.55, -2.22]} rotation={[0, 0, 0]} scale={[2, 1, 1]}>
+        <mesh geometry={nodes.Cube003.geometry} material={materials.MonitorBase} />
+        <mesh geometry={nodes.Cube003_1.geometry} material={materials.MonitorScreen} />
+      </group>
+      <group castShadow position={[2.33, 0.13, 1.45]} rotation={[0, -0.2, 0]} scale={[0.2, 0.8, 0.38]}>
+        <mesh geometry={nodes.Cube004.geometry} material={materials.KeysUnderMat} />
+        <mesh geometry={nodes.Cube004_1.geometry} material={materials.MouseBaseMat} />
+      </group>
+      <mesh geometry={nodes.MousePad.geometry} material={materials.Cable} position={[2.34, 0.04, 1.29]} scale={[1, 0.66, 1]} />
     </group>
   )
 }
