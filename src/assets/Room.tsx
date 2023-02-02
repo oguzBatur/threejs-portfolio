@@ -4,7 +4,7 @@ Command: npx gltfjsx@6.1.4 .\room.glb --types
 */
 
 import * as THREE from 'three'
-import { Float, useGLTF, } from '@react-three/drei'
+import { Float, Text, useGLTF, } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
 type GLTFResult = GLTF & {
   nodes: {
@@ -42,7 +42,7 @@ export function PcSetup(props: JSX.IntrinsicElements['group']) {
   const { nodes, materials } = useGLTF('/room.glb') as GLTFResult
   return (
     <group  {...props} dispose={null}>
-      <Float floatingRange={[0.1, .5]}>
+      <Float  floatingRange={[0.1, .5]}>
         <group castShadow position={[-0.48, 0.1, 1.26]} rotation={[0, 0.41, 0]} scale={[1.21, 0.07, 0.54]}>
           <mesh geometry={nodes.Cube001.geometry} material={materials.KeyBaseMat} />
           <mesh geometry={nodes.Cube001_1.geometry} material={materials.KeysMat} />
@@ -50,6 +50,16 @@ export function PcSetup(props: JSX.IntrinsicElements['group']) {
         </group>
       </Float>
       <group castShadow position={[0, 2.55, -2.22]} rotation={[0, 0, 0]} scale={[2, 1, 1]}>
+        <Text scale={[.2, .4, .4]}
+          position={[0, 0, .2]}
+          castShadow
+          letterSpacing={-0.03}
+          font={'/fonts/JetBrains Mono ExtraBold_Regular.json'}>
+          Merhaba, Benim Adım Batur.
+        </Text>
+        <Text scale={[.25, .5, .5]} position={[0, 0, 0]} font={'/fonts/JetBrains Mono NL Light_Regular.json'}>
+          Yazılım ile uğraşmak benim tutkum.
+        </Text>
         <mesh geometry={nodes.Cube003.geometry} material={materials.MonitorBase} />
         <mesh geometry={nodes.Cube003_1.geometry} material={materials.MonitorScreen} />
       </group>
