@@ -4,8 +4,9 @@ Command: npx gltfjsx@6.1.4 .\room.glb --types
 */
 
 import * as THREE from 'three'
-import { Float, Text, useGLTF, } from '@react-three/drei'
+import { Float, MeshDistortMaterial, useGLTF, } from '@react-three/drei'
 import { GLTF } from 'three-stdlib'
+import { Color } from 'three'
 type GLTFResult = GLTF & {
   nodes: {
     Cube: THREE.Mesh
@@ -38,36 +39,20 @@ type GLTFResult = GLTF & {
   }
 }
 
-export function PcSetup(props: JSX.IntrinsicElements['group']) {
+export function PcSetup(props: JSX.IntrinsicElements['group'], emissionColor: Color) {
   const { nodes, materials } = useGLTF('/room.glb') as GLTFResult
   return (
     <group  {...props} dispose={null}>
-      <Float  floatingRange={[0.1, .5]}>
+      <Float floatIntensity={40} rotationIntensity={40}>
         <group castShadow position={[-0.48, 0.1, 1.26]} rotation={[0, 0.41, 0]} scale={[1.21, 0.07, 0.54]}>
           <mesh geometry={nodes.Cube001.geometry} material={materials.KeyBaseMat} />
           <mesh geometry={nodes.Cube001_1.geometry} material={materials.KeysMat} />
-          <mesh geometry={nodes.Cube001_2.geometry} material={materials.KeysUnderMat} />
+          {/* <mesh geometry={nodes.Cube001_2.geometry} material={materials.KeysUnderMat} /> */}
+          <mesh geometry={nodes.Cube001_2.geometry}>
+            <MeshDistortMaterial emissive={emissionColor} />
+          </mesh>
         </group>
       </Float>
-      <group castShadow position={[0, 2.55, -2.22]} rotation={[0, 0, 0]} scale={[2, 1, 1]}>
-        <Text scale={[.2, .4, .4]}
-          position={[0, 0, .2]}
-          castShadow
-          letterSpacing={-0.03}
-          font={'/fonts/JetBrains Mono ExtraBold_Regular.json'}>
-          Merhaba, Benim Adım Batur.
-        </Text>
-        <Text scale={[.25, .5, .5]} position={[0, 0, 0]} font={'/fonts/JetBrains Mono NL Light_Regular.json'}>
-          Yazılım ile uğraşmak benim tutkum.
-        </Text>
-        <mesh geometry={nodes.Cube003.geometry} material={materials.MonitorBase} />
-        <mesh geometry={nodes.Cube003_1.geometry} material={materials.MonitorScreen} />
-      </group>
-      <group castShadow position={[2.33, 0.13, 1.45]} rotation={[0, -0.2, 0]} scale={[0.2, 0.8, 0.38]}>
-        <mesh geometry={nodes.Cube004.geometry} material={materials.KeysUnderMat} />
-        <mesh geometry={nodes.Cube004_1.geometry} material={materials.MouseBaseMat} />
-      </group>
-      <mesh geometry={nodes.MousePad.geometry} material={materials.Cable} position={[2.34, 0.04, 1.29]} scale={[1, 0.66, 1]} />
     </group>
   )
 }

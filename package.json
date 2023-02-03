@@ -9,9 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-spring/three": "^9.6.1",
     "@react-three/drei": "^9.56.1",
     "@react-three/fiber": "^8.10.1",
     "@types/three": "^0.148.1",
+    "lamina": "^1.1.23",
     "maath": "^0.5.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

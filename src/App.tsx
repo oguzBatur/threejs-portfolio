@@ -1,10 +1,9 @@
-import { useRef } from "react";
 import "./App.css";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Scroll, ScrollControls, useScroll, ContactShadows, Text, BakeShadows, Html } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Scroll, ScrollControls, useScroll, Text, Environment } from "@react-three/drei";
 import Background from "./components/Background";
-import { PcSetup } from './assets/Room';
-import PcPage from "./components/PcPage";
+import { Depth, LayerMaterial, Noise } from 'lamina';
+import { BackSide } from "three";
 
 function App() {
   return (
@@ -12,44 +11,65 @@ function App() {
       shadows
       dpr={[1, 2]}
       eventPrefix="client"
-      camera={{ fov: 70, }}
-      gl={{ logarithmicDepthBuffer: true, antialias: true }}
+      camera={{ position: [0, 0, 10], fov: 50 }}
       style={{ height: '100vh' }}
     >
-      <ContactShadows resolution={1024} frames={1} position={[0, -1.16, 0]} scale={10} blur={3} opacity={1} far={10} />
-      <BakeShadows />
-      <color attach="background" args={['#202020']} />
-      <fog attach="fog" args={['#202020', 5, 50]} />
-      <ambientLight intensity={.015} castShadow position={[0, -2, 0]} />
-      <directionalLight />
-      <ScrollControls horizontal={true} pages={10} damping={10}  >
-        <Scene position={[0, -2, 0]} />
+      <NoiseBg />
+      <ScrollControls horizontal={false} pages={10} damping={1}  >
+        <Scene />
       </ScrollControls>
     </Canvas>
   );
 }
 
 
+function NoiseBg() {
+
+  return (
+    <mesh scale={100} position={[0, 0, -10]}>
+      <boxGeometry args={[1, 1, 1]} />
+      <LayerMaterial side={BackSide}>
+        <Depth colorB="gray" colorA="darkgray" alpha={1} mode="normal" near={130} far={200} origin={[100, 100, -100]} />
+        <Noise mapping="local" type="white" scale={2000} colorA="white" colorB="skyblue" mode="subtract" alpha={0.2} />
+      </LayerMaterial>
+    </mesh>
+  )
+
+}
+
 function SceneProps() {
-  const pcRef = useRef<any>();
   return (
     <Scroll>
-      <Html >
-        <PcPage />
-      </Html>
-      <Background ballCount={100} props={{ position: [0, 40, -25] }} />
+      <Background ballCount={100} props={{ position: [0, 0, -65] }} />
+      <HeroText />
     </Scroll>
   )
 
 }
 
+const extraboldFont = "/fonts/JetBrainsMono-ExtraBold.ttf";
+const regularFont = "/fonts/JetbrainsMonoNL-Light.ttf";
+const thinFont = "/fonts/JetbrainsMono-Thin.ttf";
+
+
+function HeroText() {
+
+  return (
+    <group >
+      <Text font={extraboldFont} anchorX={'center'} position={[0, 1, 0]} anchorY={"middle"}>
+        Oğuz Batur Sarıöz
+      </Text>
+      <Text scale={.5} font={regularFont}>
+        Fullstack Developer
+      </Text>
+    </group>
+
+  )
+
+
+}
+
 function Scene(props: JSX.IntrinsicElements['group']) {
-  const scroll = useScroll();
-  /*useFrame((state) => {
-    const scrollRange = scroll.range(1 / 8, 1 / 4)
-    state.camera.position.set(0, 0, scrollRange);
-  })
-  */
   return (
     <group {...props}>
       <SceneProps />
