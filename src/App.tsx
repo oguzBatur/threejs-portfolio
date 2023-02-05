@@ -8,7 +8,7 @@ import { BackSide } from "three";
 function App() {
   return (
     <Canvas
-      shadows
+      shadows={'soft'}
       dpr={[1, 2]}
       eventPrefix="client"
       camera={{ position: [0, 0, 10], fov: 50 }}

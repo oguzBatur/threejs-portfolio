@@ -33,21 +33,21 @@ function Background({ props, ballCount }: IBackground) {
 
 
 function BgItem(props: JSX.IntrinsicElements['mesh']) {
-  const randDist = randInt(.4, .5);
-  const randSpeed = randInt(.9, 1)
-  const randRad = randInt(.7, 1);
-  const randEmis = randInt(10, 100);
+  // const randDist = randInt(.4, .5);
+  // const randSpeed = randInt(.9, 1)
+  // const randRad = randInt(.7, 1);
+  // const randEmis = randInt(10, 100);
 
   return (
     <Float rotationIntensity={10} speed={.5} floatIntensity={40}>
       <mesh castShadow receiveShadow {...props} >
-        {/* <LayerMaterial>
+         {/*<LayerMaterial>
           <Noise mapping="local" type="simplex" scale={1000} colorA="#ffaf40" colorB="black" mode="overlay" />
           <Depth colorA={"#2032A5"} colorB={"#0F1C4D"} mode='normal' alpha={.5} near={0} far={2} origin={[1, 1, 1]} />
           <Depth colorA={"purple"} colorB={"#0F1C4D"} mode='add' near={3} far={2} origin={[1, 1, 1]} />
           <Fresnel mode="add" color={"#E7B473"} intensity={.3} power={2.5} bias={0.0} />
-        </LayerMaterial> */}
-        <PcSetup />
+        </LayerMaterial>*/}
+        <PcSetup/>
       </mesh>
     </Float>
   )

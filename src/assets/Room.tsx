@@ -44,13 +44,9 @@ export function PcSetup(props: JSX.IntrinsicElements['group'], emissionColor: Co
   return (
     <group  {...props} dispose={null}>
       <Float floatIntensity={40} rotationIntensity={40}>
-        <group castShadow position={[-0.48, 0.1, 1.26]} rotation={[0, 0.41, 0]} scale={[1.21, 0.07, 0.54]}>
-          <mesh geometry={nodes.Cube001.geometry} material={materials.KeyBaseMat} />
-          <mesh geometry={nodes.Cube001_1.geometry} material={materials.KeysMat} />
-          {/* <mesh geometry={nodes.Cube001_2.geometry} material={materials.KeysUnderMat} /> */}
-          <mesh geometry={nodes.Cube001_2.geometry}>
-            <MeshDistortMaterial emissive={emissionColor} />
-          </mesh>
+        <group>
+          <mesh material={materials.MonitorScreen} geometry={nodes.Cube.geometry} />
+          <mesh material={materials.MonitorBase} geometry={nodes.Cube001.geometry} />
         </group>
       </Float>
     </group>
